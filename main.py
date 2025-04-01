@@ -20,7 +20,7 @@ import glob
 # Replace with your own values
 SRC_PATH = "~/Documents/Projects"
 SAVE_FOLDER_PATH = "~/Documents/Projects/Backups"
-CREDENTIALS_FILE = "~/.gcp/credentials.json"
+CREDENTIALS_FILE = "~/.gcp/client_secret_1030461053350-t9lk0hleqmade9kborua753uamoddsi7.apps.googleusercontent.com.json"
 
 # Create SAVE_FOLDER_PATH if it doesn't exist
 if not os.path.exists(SAVE_FOLDER_PATH):
