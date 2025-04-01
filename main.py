@@ -26,21 +26,24 @@ CREDENTIALS_FILE = "~/.gcp/credentials.json"
 if not os.path.exists(SAVE_FOLDER_PATH):
     os.makedirs(SAVE_FOLDER_PATH)
 
-# Move all *.log.gz files from SRC_PATH to SAVE_FOLDER_PATH
+# Move all *.log.gz files from SRC_PATH to SAVE_FOLDER_PATH and store their names
 log_files = glob.glob(os.path.join(SRC_PATH, "*.log.gz"))
+moved_files = []
 for file_path in log_files:
-    shutil.move(file_path, SAVE_FOLDER_PATH)
+    file_name = os.path.basename(file_path)
+    shutil.move(file_path, os.path.join(SAVE_FOLDER_PATH, file_name))
+    moved_files.append(os.path.join(SAVE_FOLDER_PATH, file_name))
 
 # Compress iot.db with maximum compression using gzip and keep the original
 input_file = os.path.join(SRC_PATH, "iot.db")
 output_file = os.path.join(SAVE_FOLDER_PATH, "iot.db.gz")
+compressed_db = output_file
 
 # Using -9 for maximum compression and -k to keep the original file
 os.system(f"gzip -9 -k {input_file} -c > {output_file}")
 
-
 # Replace 'YOUR_FOLDER_ID' with the actual ID of the folder you want to use on Google Drive
-YOUR_FOLDER_ID = 'xxxxxxxxxxxxxxxxxxxxxxxxx'
+YOUR_FOLDER_ID = '1Hn_6d6-mW3RkREK2qGpqQH_vFJi59umx'
 
 # Google Drive API settings
 SCOPES = ["https://www.googleapis.com/auth/drive"]
@@ -131,3 +134,16 @@ for root, dirs, files in os.walk(SAVE_FOLDER_PATH):
             # The file does not exist on Google Drive, upload it
             print(f"Uploading {relative_path} to Google Drive")
             upload_drive_file(local_file_path, YOUR_FOLDER_ID)
+            
+# Delete all compressed files
+print("Deleting compressed files...")
+for file_path in moved_files:
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        print(f"Deleted: {file_path}")
+
+if os.path.exists(compressed_db):
+    os.remove(compressed_db)
+    print(f"Deleted: {compressed_db}")
+
+print("Cleanup complete.")
